@@ -4,7 +4,7 @@
   <arg name="HAND" default="right"/>
 
   <!-- control frequency -->
-  <arg name="HZ" default="200"/>
+  <arg name="HZ" default="1000"/>
 
   <arg name="MAINTAIN" default="true" />
 

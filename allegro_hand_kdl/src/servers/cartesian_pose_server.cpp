@@ -56,17 +56,17 @@ double v_lim_vel_ = 0.03; // meters per second
 double v_lim_rot_ = 0.35; // radians per second
 
 // params
-double update_freq_ = 200;
-double safety_torque_ = 1.0;
+double update_freq_ = 1000;
+double safety_torque_ = 2.0;
 bool maintain_ = true;
 double stop_err_ = 0.0005; // meters
 double time_limit_ = 5.0;
 string pose_param_ns_;
 
-double k_p_ = 10;
-double k_r_ = 1;
-double k_d_ = 0.001;
-double k_i_ = 0.0;
+double k_p_ = 40;
+double k_r_ = 1.0;
+double k_d_ = 0.02;
+double k_i_ = 0.01;
 
 // state memory
 vector<double> q_current_;
@@ -434,8 +434,6 @@ void timerCallback(const ros::TimerEvent&)
 
   // update controller state and get the current cartesian pose
   HandPose x_cur = cp_control_->updatePose(q_current_);
-  for(int j=0; j<16; j++)
-    ROS_INFO("Cartesian coord: %f, %f, %f", x_cur[j].p.data[0], x_cur[j].p.data[1], x_cur[j].p.data[2]);
 
   // if no desired state, then maintain the current state
   if(x_des_.size() != FINGER_COUNT)

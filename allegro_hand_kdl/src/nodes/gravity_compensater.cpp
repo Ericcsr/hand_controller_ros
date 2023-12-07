@@ -43,7 +43,7 @@ AllegroKdlConfig allegro_kdl_config_;
 InverseDynamics* dynamics_;
 
 // control params
-double kdl_scaler_;
+double kdl_scaler_=4.0;
 double frequency_ = 200; // control freq (Hz)
 
 // state
@@ -114,8 +114,7 @@ bool getParams(){
 
   //************
   if(!ros::param::get("/allegro_kdl/kdl_scaler", kdl_scaler_) ){
-    ROS_ERROR("Gravity compensate: Can't find kdl_scaler param.");
-    return false;
+    ROS_WARN("Gravity compensate: Can't find kdl_scaler param.");
   }
   ROS_DEBUG("Gravity compensate: kdl_scaler is %.3f.", kdl_scaler_);
 

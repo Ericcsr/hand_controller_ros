@@ -9,7 +9,7 @@
   <arg name="WRIST_FRAME" default="hand_root"/>
   <arg name="WORLD_FRAME" default="world"/>
 
-  <arg name="HZ" default="200" />
+  <arg name="HZ" default="1000" />
   <node name="gravity_compensate_$(arg LABEL)"
         type="gravity_compensate"
         pkg="allegro_hand_kdl"
