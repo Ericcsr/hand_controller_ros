@@ -1,0 +1,47 @@
+<launch>
+
+  <arg name="JSIZE" default="6"/>
+  <arg name="PERIOD" default="0.005"/>
+
+  <node name="test_pub_1" pkg="rostopic" type="rostopic"
+        args="pub -r 200 /msg_a sensor_msgs/JointState &quot;{header: {seq: 0, stamp: {secs: 0, nsecs: 0}, frame_id: ''}, name: [''], position: [0], velocity: [0], effort: [1, 1, 1, 1, 1, 1]}&quot;" />
+
+  <node name="test_pub_2" pkg="rostopic" type="rostopic"
+        args="pub -r 200 /msg_b sensor_msgs/JointState &quot;{header: {seq: 0, stamp: {secs: 0, nsecs: 0}, frame_id: ''}, name: [''], position: [0], velocity: [0], effort: [2, 2, 2, 2, 2, 2]}&quot;" />
+
+  <!-- Sums messages -->
+  <node name="adder"
+    type="connector_node"
+    pkg="topic_connector"
+    output="screen" >
+
+    <!-- topic remappings -->
+    <remap from="in1" to="msg_a"/>
+    <remap from="in2" to="msg_b"/>
+    <remap from="out" to="msg_sum"/>
+
+    <param name="connector_type" value="adder"/>
+    <param name="joint_count" value="$(arg JSIZE)"/>
+    <param name="period" value="$(arg PERIOD)"/>
+  </node>
+
+
+  <!-- Applies limits on the message -->
+  <node name="limiter"
+    type="connector_node"
+    pkg="topic_connector"
+    respawn="true"
+    output="screen" >
+
+    <!-- topic remappings -->
+    <remap from="in1" to="msg_sum"/>
+    <remap from="out" to="msg_final"/>
+
+    <param name="limits/torque/upper" value="4.0" />
+    <param name="limits/torque/lower" value="-4.0" />
+
+    <param name="connector_type" value="limiter"/>
+    <param name="joint_count" value="$(arg JSIZE)"/>
+    <param name="period" value="$(arg PERIOD)"/>
+  </node>
+</launch>
