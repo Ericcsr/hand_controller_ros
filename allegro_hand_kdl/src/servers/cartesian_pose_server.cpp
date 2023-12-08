@@ -64,9 +64,9 @@ double stop_err_ = 0.0005; // meters
 double time_limit_ = 5.0;
 string pose_param_ns_;
 
-double k_p_ = 40;
-double k_r_ = 1.0;
-double k_d_ = 0.02;
+double k_p_ = 100;
+double k_r_ = 0.0;
+double k_d_ = 8.0;
 double k_i_ = 0.01;
 
 // state memory
@@ -172,7 +172,7 @@ bool getControlGains(){
   ros::param::get(param_name+"/d", k_d_);
   ros::param::get(param_name+"/i", k_i_);
 
-  ROS_DEBUG("Cartesian Pose Server: KP= %.3f, KR= %.3f, KV= %.3f, KI= %.3f.",
+  ROS_INFO("Cartesian Pose Server: KP= %.3f, KR= %.3f, KV= %.3f, KI= %.3f.",
         k_p_, k_r_, k_d_, k_i_);
 
   return true;
@@ -519,13 +519,10 @@ bool processPoseRequest(
 bool processGainRequest(allegro_hand_kdl::GainRequest::Request& req,
                         allegro_hand_kdl::GainRequest::Response& res)
 {
-  // read the pose (if exists)
-  if(req.gain.size() != 4) return false;
-
   // set the gains
-  cp_control_->setPositionGains(req.kp1, req.kp2, req.kp3, req.kp4);
-  cp_control_->setVelocityGains(0.8 * sqrt(req.kv1), 0.8 * sqrt(req.kv2), 
-                                0.8 * sqrt(req.kv3), 0.8 * sqrt(req.kv4));
+  cp_control_->setPositionGain(req.kp1, req.kp2, req.kp3, req.kp4);
+  cp_control_->setVelocityGain(0.8 * sqrt(req.kp1), 0.8 * sqrt(req.kp2), 
+                                0.8 * sqrt(req.kp3), 0.8 * sqrt(req.kp4));
   res.success = true;
   return true;
 }

@@ -116,10 +116,10 @@ gains:
       j33: 0.56
   cartesian:
     pose:
-      p: 35.0
-      d: 5.0
-      i: 70.0
-      r: 0.002
+      p: 400.0
+      d: 20.0
+      i: 7.0
+      r: 0.0
     trajectory:
       p: 70.0
       d: 7.0

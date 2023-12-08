@@ -35,7 +35,7 @@ CartesianForce::CartesianForce(AllegroKdlConfig& kdl_config)
   q_ref_vec_.push_back(finger_ref);
   q_ref_vec_.push_back(finger_ref);
   q_ref_vec_.push_back(finger_ref);
-  Eigen::VectorXd thumb_ref(4):
+  Eigen::VectorXd thumb_ref(4);
   thumb_ref << pi/3, 0.0, pi/6, pi/6;
   q_ref_vec_.push_back(thumb_ref);
   if (!kdl_config.isReady())
@@ -108,10 +108,12 @@ KDL::JntArray CartesianForce::computeTorquesNullSpace(const KDL::JntArray& q, co
 
     // Calculate the torque using jacobian
     Eigen::MatrixXd jac_pos = jac.data.block(0,0,3,FINGER_LENGTH);
-    Eigen::VectorXd t_finger = jac_pos.transpose() * w_vec[fi].data;
+    Eigen::VectorXd t_finger = jac_pos.transpose() * w_vec[fi].data.segment(0,3);
     // Need to solve pesudo inverse to get the null space torques
-    Eigen::MatrixXd jac_pinv = jac_pos.data.completeOrthogonalDecomposition().pseudoInverse();
-    Eigen::VectorXd t_finger_null = (Eigen::MatrixXd::Identity(FINGER_LENGTH, FINGER_LENGTH) - jac_pos.transpose() * jac_pinv.transpose()) *(q_ref_vec_[fi] - q_fi.data);
+    Eigen::MatrixXd jac_pinv = jac_pos.completeOrthogonalDecomposition().pseudoInverse();
+    //ROS_INFO("Debug jacobian pinv: %d, %d", jac_pinv.rows(), jac_pinv.cols());
+    //ROS_INFO("Debug jacobian pos: %d, %d", jac_pos.rows(), jac_pos.cols());
+    Eigen::VectorXd t_finger_null = (Eigen::MatrixXd::Identity(FINGER_LENGTH, FINGER_LENGTH) - jac_pos.transpose() * jac_pinv.transpose()) *(q_ref_vec_[fi] - q_fi.data) * 0.5;
     t_finger = t_finger + t_finger_null;
     // ROS_INFO("Debug jacobian: %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f",
     //   jac.data(0,0), jac.data(0,1), jac.data(0,2), jac.data(1,0), jac.data(1,1), jac.data(1,2),

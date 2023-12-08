@@ -119,9 +119,9 @@ class CartesianPositionController
     void setActiveFingers(const vector<bool> activity_vec);
     void setActiveFingers(const vector<uint8_t> activity_vec);
 
-    double[] getPositionGain();
+    double* getPositionGain();
     double getRotationGain();
-    double[] getVelocityGain();
+    double* getVelocityGain();
     double getIntegralGain();
     double getIntegralDecay();
     vector<bool> getActiveFingers();

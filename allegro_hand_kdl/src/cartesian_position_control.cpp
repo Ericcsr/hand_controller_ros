@@ -299,7 +299,7 @@ void CartesianPositionController::setPositionGain(const double k_pos)
   k_p_[1] = k_pos;
   k_p_[2] = k_pos;
   k_p_[3] = k_pos;}
-void CartesianPositionController::setPostionGain(const double k_pos_1, const double k_pos_2, const double k_pos_3, const double k_pos_4)
+void CartesianPositionController::setPositionGain(double k_pos_1, double k_pos_2, double k_pos_3, double k_pos_4)
 { k_p_[0] = k_pos_1;
   k_p_[1] = k_pos_2;
   k_p_[2] = k_pos_3;
@@ -337,11 +337,11 @@ void CartesianPositionController::setActiveFingers(const vector<uint8_t> activit
     active_fingers_[fi] = (bool) activity_vec[fi];
 }
 // getters
-double[] CartesianPositionController::getPositionGain()
+double* CartesianPositionController::getPositionGain()
 { return k_p_; }
 double CartesianPositionController::getRotationGain()
 { return k_r_; }
-double[] CartesianPositionController::getVelocityGain()
+double* CartesianPositionController::getVelocityGain()
 { return k_d_; }
 double CartesianPositionController::getIntegralGain()
 { return k_i_; }
