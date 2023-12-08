@@ -28,7 +28,7 @@
 #include <memory>
 
 #include <allegro_hand_kdl/cartesian_position_control.h>
-#include <allegro_hand_kdl/PoseRequest.h>
+#include <allegro_hand_kdl/PoseGoal.h>
 #include <allegro_hand_kdl/GainRequest.h>
 
 #include <kdl_control_tools/progress_logger.h>
@@ -87,7 +87,7 @@ vector<KDL::Twist> publishError(const HandPose& x_cur);
 void publishTorque(const KDL::JntArray& torque_vec);
 void jointStateCallback(const sensor_msgs::JointState::ConstPtr &msg);
 void timerCallback(const ros::TimerEvent&);
-bool processPoseRequest(allegro_hand_kdl::PoseRequest::Request& req, allegro_hand_kdl::PoseRequest::Response& res);
+bool processPoseRequest(allegro_hand_kdl::PoseGoal::Request& req, allegro_hand_kdl::PoseGoal::Response& res);
 bool processGainRequest(allegro_hand_kdl::GainRequest::Request& req, allegro_hand_kdl::GainRequest::Response& res);
 void displayDesiredPoses(const HandPose& x_des);
 HandVelocity limitedDesiredVelocity(const HandPose& x_cur);
@@ -477,40 +477,30 @@ void timerCallback(const ros::TimerEvent&)
 }
 
 bool processPoseRequest(
-      allegro_hand_kdl::PoseRequest::Request& req,
-      allegro_hand_kdl::PoseRequest::Response& res)
+      allegro_hand_kdl::PoseGoal::Request& req,
+      allegro_hand_kdl::PoseGoal::Response& res)
 {
   // read the pose (if exists)
-  if(req.pose.size() > 0){
-    HandPose pose = getDefinedPose(req.pose);
-    if(pose.size() < FINGER_COUNT) return false;
+  if(req.pose.size() == 12){
+    HandPose pose(FINGER_COUNT);
+    for(int fi=0; fi<FINGER_COUNT; fi++){
+      // position
+      pose[fi].p.data[0] = req.pose[fi*3];
+      pose[fi].p.data[1] = req.pose[fi*3+1];
+      pose[fi].p.data[2] = req.pose[fi*3+2];
+      // orientation
+      tf2::Quaternion quat;
+      quat.setRPY(0.0, 0.0, 0.0);
+      pose[fi].M = KDL::Rotation::Quaternion(quat.x(), quat.y(), quat.z(), quat.w());
+    }
     // update the desired joint states
     x_des_ = pose;
     displayDesiredPoses(pose);
   }else{
     // otherwise maintain current pose
-    x_des_.clear();
+    res.success = false;
+    return false;
   }
-  // display on RViz
-
-  // maintaining behaviour (optional)
-  if(req.behaviour.size() > 0)
-    maintain_ = (req.behaviour == "maintain");
-  // finger activation update (optional)
-  if(req.active_fingers.size() == FINGER_COUNT)
-    cp_control_->setActiveFingers(req.active_fingers);
-
-  // activate control again
-  finished_ = false;
-
-  // used when not maintaining the pose:
-  t_begin_ = ros::Time::now();
-
-  // monitor errors [e_pos, e_rot] x fingers
-  total_errors_.clear();
-  total_errors_.resize(2*FINGER_COUNT, 0.0);
-
-  // FIXME: success is meaningless right now
   res.success = true;
   return true;
 }

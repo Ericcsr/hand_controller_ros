@@ -33,6 +33,7 @@ add_service_files(
   FILES
   PoseRequest.srv
   GainRequest.srv
+  PoseGoal.srv
 )
 
 add_action_files(
