@@ -307,15 +307,15 @@ void CartesianPositionController::setPositionGain(double k_pos_1, double k_pos_2
 void CartesianPositionController::setRotationGain(const double k_rot)
 { k_r_ = k_rot; }
 void CartesianPositionController::setVelocityGain(const double k_vel)
-{ k_d_[1] = k_vel;
+{ k_d_[0] = k_vel;
+  k_d_[1] = k_vel;
   k_d_[2] = k_vel;
-  k_d_[3] = k_vel;
-  k_d_[4] = k_vel;}
+  k_d_[3] = k_vel;}
 void CartesianPositionController::setVelocityGain(const double k_vel_1, const double k_vel_2, const double k_vel_3, const double k_vel_4)
-{ k_d_[1] = k_vel_1;
-  k_d_[2] = k_vel_2;
-  k_d_[3] = k_vel_3;
-  k_d_[4] = k_vel_4;}
+{ k_d_[0] = k_vel_1;
+  k_d_[1] = k_vel_2;
+  k_d_[2] = k_vel_3;
+  k_d_[3] = k_vel_4;}
 void CartesianPositionController::setIntegralGain(const double k_int)
 { k_i_ = k_int; }
 void CartesianPositionController::setIntegralDecay(const double decay_rate)
