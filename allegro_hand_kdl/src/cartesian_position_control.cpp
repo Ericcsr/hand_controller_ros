@@ -97,7 +97,7 @@ HandAcceleration CartesianPositionController::computeForces(const HandPose& x_de
 
     // calculate the desired cartesian acceleration
     KDL::Twist xdd_des_twist =
-      k_p_ * x_dif + k_d_ * (xd_des[fi] - xd[fi]) + k_i_ * e_sum_vec_[fi];
+      k_p_[fi] * x_dif + k_d_[fi] * (xd_des[fi] - xd[fi]) + k_i_ * e_sum_vec_[fi];
     // convert to wrench
     // rotation gain for both proportional and derivative parts
     xdd_des[fi].force = xdd_des_twist.vel;
@@ -137,7 +137,8 @@ KDL::JntArray CartesianPositionController::computeTorques(const HandPose& x_des,
   }
   // ROS_INFO("Reach here: %f, %f, %f, %f", u_des[0].data[0],u_des[0].data[1],u_des[0].data[2],u_des[0].data[3]);
   // calculate torques to reach the desired state
-  return cf_solver_->computeTorques(q_cur_, u_des);
+  //return cf_solver_->computeTorques(q_cur_, u_des);
+  return cf_solver_->computeTorquesNullSpace(q_cur_, u_des);
 }
 // wrapper with std vectors
 vector<double> CartesianPositionController::computeTorques(const vector<geometry_msgs::Pose>& x_des, const vector<geometry_msgs::Twist>& xd_des){
@@ -294,11 +295,27 @@ void CartesianPositionController::setGains(const double k_pos, const double k_ro
   setVelocityGain(k_vel);
   setIntegralGain(k_int); }
 void CartesianPositionController::setPositionGain(const double k_pos)
-{ k_p_ = k_pos; }
+{ k_p_[0] = k_pos;
+  k_p_[1] = k_pos;
+  k_p_[2] = k_pos;
+  k_p_[3] = k_pos;}
+void CartesianPositionController::setPostionGain(const double k_pos_1, const double k_pos_2, const double k_pos_3, const double k_pos_4)
+{ k_p_[0] = k_pos_1;
+  k_p_[1] = k_pos_2;
+  k_p_[2] = k_pos_3;
+  k_p_[3] = k_pos_4;}
 void CartesianPositionController::setRotationGain(const double k_rot)
 { k_r_ = k_rot; }
 void CartesianPositionController::setVelocityGain(const double k_vel)
-{ k_d_ = k_vel; }
+{ k_d_[1] = k_vel;
+  k_d_[2] = k_vel;
+  k_d_[3] = k_vel;
+  k_d_[4] = k_vel;}
+void CartesianPositionController::setVelocityGain(const double k_vel_1, const double k_vel_2, const double k_vel_3, const double k_vel_4)
+{ k_d_[1] = k_vel_1;
+  k_d_[2] = k_vel_2;
+  k_d_[3] = k_vel_3;
+  k_d_[4] = k_vel_4;}
 void CartesianPositionController::setIntegralGain(const double k_int)
 { k_i_ = k_int; }
 void CartesianPositionController::setIntegralDecay(const double decay_rate)
@@ -320,11 +337,11 @@ void CartesianPositionController::setActiveFingers(const vector<uint8_t> activit
     active_fingers_[fi] = (bool) activity_vec[fi];
 }
 // getters
-double CartesianPositionController::getPositionGain()
+double[] CartesianPositionController::getPositionGain()
 { return k_p_; }
 double CartesianPositionController::getRotationGain()
 { return k_r_; }
-double CartesianPositionController::getVelocityGain()
+double[] CartesianPositionController::getVelocityGain()
 { return k_d_; }
 double CartesianPositionController::getIntegralGain()
 { return k_i_; }

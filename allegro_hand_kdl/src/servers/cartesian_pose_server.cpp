@@ -29,6 +29,7 @@
 
 #include <allegro_hand_kdl/cartesian_position_control.h>
 #include <allegro_hand_kdl/PoseRequest.h>
+#include <allegro_hand_kdl/GainRequest.h>
 
 #include <kdl_control_tools/progress_logger.h>
 
@@ -87,6 +88,7 @@ void publishTorque(const KDL::JntArray& torque_vec);
 void jointStateCallback(const sensor_msgs::JointState::ConstPtr &msg);
 void timerCallback(const ros::TimerEvent&);
 bool processPoseRequest(allegro_hand_kdl::PoseRequest::Request& req, allegro_hand_kdl::PoseRequest::Response& res);
+bool processGainRequest(allegro_hand_kdl::GainRequest::Request& req, allegro_hand_kdl::GainRequest::Response& res);
 void displayDesiredPoses(const HandPose& x_des);
 HandVelocity limitedDesiredVelocity(const HandPose& x_cur);
 HandPose getDefinedPose(string desired_name);
@@ -513,6 +515,20 @@ bool processPoseRequest(
   return true;
 }
 
+// Each finger should have different pd gain
+bool processGainRequest(allegro_hand_kdl::GainRequest::Request& req,
+                        allegro_hand_kdl::GainRequest::Response& res)
+{
+  // read the pose (if exists)
+  if(req.gain.size() != 4) return false;
+
+  // set the gains
+  cp_control_->setPositionGains(req.kp1, req.kp2, req.kp3, req.kp4);
+  cp_control_->setVelocityGains(0.8 * sqrt(req.kv1), 0.8 * sqrt(req.kv2), 
+                                0.8 * sqrt(req.kv3), 0.8 * sqrt(req.kv4));
+  res.success = true;
+  return true;
+}
 // This procedure is called when the ros node is interrupted
 void sigintCallback(int sig)
 {

@@ -69,9 +69,9 @@ class CartesianPositionController
 
     // control gain params
     // position
-    double k_p_;
+    double k_p_[4];
     double k_r_;
-    double k_d_;
+    double k_d_[4];
     double k_i_;
 
     double decay_int_;
@@ -107,8 +107,10 @@ class CartesianPositionController
     // Getters and setters
     void setGains(const double k_pos, const double k_rot, const double k_vel, const double k_int);
     void setPositionGain(const double k_pos);
+    void setPositionGain(double k_pos_1, double k_pos_2, double k_pos_3, double k_pos_4);
     void setRotationGain(const double k_rot);
     void setVelocityGain(const double k_vel);
+    void setVelocityGain(double k_vel_1, double k_vel_2, double k_vel_3, double k_vel_4);
 
     void setIntegralGain(const double k_int);
     void setIntegralDecay(const double decay_rate);
@@ -117,9 +119,9 @@ class CartesianPositionController
     void setActiveFingers(const vector<bool> activity_vec);
     void setActiveFingers(const vector<uint8_t> activity_vec);
 
-    double getPositionGain();
+    double[] getPositionGain();
     double getRotationGain();
-    double getVelocityGain();
+    double[] getVelocityGain();
     double getIntegralGain();
     double getIntegralDecay();
     vector<bool> getActiveFingers();

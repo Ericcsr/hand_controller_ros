@@ -32,6 +32,7 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 add_service_files(
   FILES
   PoseRequest.srv
+  GainRequest.srv
 )
 
 add_action_files(

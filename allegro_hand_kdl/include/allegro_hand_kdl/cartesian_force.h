@@ -42,6 +42,7 @@ class CartesianForce
 {
   private:
     vector<ChainJntToJacSolver*> finger_solver_vec_;
+    vector<Eigen::VectorXd> q_ref_vec_;
 
     void createFingerSolvers_(AllegroKdlConfig& kdl_config);
 
@@ -50,6 +51,9 @@ class CartesianForce
     ~CartesianForce();
 
     // returns the joint torques which achieve the desired cartesian forces
+    KDL::JntArray computeTorquesNullSpace(const KDL::JntArray& q, const vector<KDL::JntArray>& f_cart);
+    KDL::JntArray computeTorquesNullSpace(const KDL::JntArray& q, const vector<KDL::Wrench>& f_cart);
+    vector<double> computeTorquesNullSpace(const vector<double>& q, const vector< vector<double> >& f_cart);
     KDL::JntArray computeTorques(const KDL::JntArray& q, const vector<KDL::JntArray>& f_cart);
     KDL::JntArray computeTorques(const KDL::JntArray& q, const vector<KDL::Wrench>& f_cart);
     vector<double> computeTorques(const vector<double>& q, const vector< vector<double> >& f_cart);
