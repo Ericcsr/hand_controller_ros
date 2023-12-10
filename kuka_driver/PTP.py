@@ -28,7 +28,7 @@ class PTP:
 
     def awaitConfirmation(self):
         message = self.mysoc.receive()
-        print(message)
+        print("Message from robot:",message)
         sys.stdout.flush()
 
     ## Arc motions
