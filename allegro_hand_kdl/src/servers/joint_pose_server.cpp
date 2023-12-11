@@ -31,7 +31,7 @@
 
 #include <allegro_hand_kdl/joint_position_control.h>
 #include <allegro_hand_kdl/PoseRequest.h>
-#include <allegro_hand_kdl/GainRequest.h>
+#include <allegro_hand_kdl/GainParam.h>
 
 #include <kdl_control_tools/progress_logger.h>
 

@@ -26,7 +26,7 @@
 
 #include <allegro_hand_kdl/allegro_kdl_config.h>
 #include <allegro_hand_kdl/PoseRequest.h>
-#include <allegro_hand_kdl/GainRequest.h>
+#include <allegro_hand_kdl/GainParam.h>
 
 using namespace std;
 //

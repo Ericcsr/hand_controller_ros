@@ -32,7 +32,7 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 add_service_files(
   FILES
   PoseRequest.srv
-  GainRequest.srv
+  GainParam.srv
   PoseGoal.srv
 )
 

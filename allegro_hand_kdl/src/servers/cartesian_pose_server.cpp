@@ -29,7 +29,7 @@
 
 #include <allegro_hand_kdl/cartesian_position_control.h>
 #include <allegro_hand_kdl/PoseGoal.h>
-#include <allegro_hand_kdl/GainRequest.h>
+#include <allegro_hand_kdl/GainParam.h>
 
 #include <kdl_control_tools/progress_logger.h>
 
@@ -88,7 +88,7 @@ void publishTorque(const KDL::JntArray& torque_vec);
 void jointStateCallback(const sensor_msgs::JointState::ConstPtr &msg);
 void timerCallback(const ros::TimerEvent&);
 bool processPoseRequest(allegro_hand_kdl::PoseGoal::Request& req, allegro_hand_kdl::PoseGoal::Response& res);
-bool processGainRequest(allegro_hand_kdl::GainRequest::Request& req, allegro_hand_kdl::GainRequest::Response& res);
+bool processGainRequest(allegro_hand_kdl::GainParam::Request& req, allegro_hand_kdl::GainParam::Response& res);
 void displayDesiredPoses(const HandPose& x_des);
 HandVelocity limitedDesiredVelocity(const HandPose& x_cur);
 HandPose getDefinedPose(string desired_name);
@@ -142,6 +142,8 @@ int main(int argc, char **argv){
 
   ros::ServiceServer service =
     nh.advertiseService("desired_cartesian_pose", processPoseRequest);
+  ros::ServiceServer gservice = 
+    nh.advertiseService("desired_pd_gain", processGainRequest);
 
   // start the control loop
   t_begin_ = ros::Time::now();
@@ -506,13 +508,13 @@ bool processPoseRequest(
 }
 
 // Each finger should have different pd gain
-bool processGainRequest(allegro_hand_kdl::GainRequest::Request& req,
-                        allegro_hand_kdl::GainRequest::Response& res)
+bool processGainRequest(allegro_hand_kdl::GainParam::Request& req,
+                        allegro_hand_kdl::GainParam::Response& res)
 {
   // set the gains
-  cp_control_->setPositionGain(req.kp1, req.kp2, req.kp3, req.kp4);
-  cp_control_->setVelocityGain(0.8 * sqrt(req.kp1), 0.8 * sqrt(req.kp2), 
-                                0.8 * sqrt(req.kp3), 0.8 * sqrt(req.kp4));
+
+  cp_control_->setPositionGain(req.kp[0], req.kp[1], req.kp[2], req.kp[3]);
+  cp_control_->setVelocityGain(req.kd[0], req.kd[1], req.kd[2], req.kd[3]);
   res.success = true;
   return true;
 }

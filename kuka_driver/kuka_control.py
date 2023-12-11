@@ -22,11 +22,11 @@ def get_ee_base_pose(pos,ori):
 
 
 if __name__ == '__main__':
-    ip  = "172.31.1.147"
-    iiwa = iiwaPy3(ip)
     rospy.init_node("kuka_position_control")
     br = tf.TransformBroadcaster()
     pub = rospy.Publisher("kuka_status", String, queue_size=1)
+    ip  = "172.31.1.147"
+    iiwa = iiwaPy3(ip)
 
     def new_pose_handler(pose_msg):
         print("New message received.")
