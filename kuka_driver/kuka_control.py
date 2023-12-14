@@ -11,8 +11,8 @@ from iiwaPy3 import iiwaPy3
 R = np.array([[0.7071,-0.7071,0.0],
               [0.7071,0.7071,0.0],
               [0.0,0.0,1.0]]) # +45 degree
-t = np.array([624.1869927062419, -84.9738197397598, 190]) * 0.001 # tune by hand.
-euler_offset = np.array([-1.65164718e+00, -2.70486858e-05, -3.14138246e+00])
+t = np.array([624.1869927062419, -84.9738197397598, 180]) * 0.001 # tune by hand.
+euler_offset = np.array([-1.65164718e+00, -2.70486858e-05, -np.pi])
 
 def get_ee_world_pose(pos):
     return R.T@(pos[:3] * 0.001 - t), pos[3:] - euler_offset
@@ -32,11 +32,11 @@ if __name__ == '__main__':
         print("New message received.")
         pose = np.array(pose_msg.pose)
         ee_base = get_ee_base_pose(pose[:3], pose[3:])
-        print(ee_base)
+        print(ee_base, iiwa.getEEFPos())
         iiwa.movePTPLineEEF(ee_base, [100])
         ee_pose_new = np.array(iiwa.getEEFPos())
         ee_pos_new, ee_ori_new = get_ee_world_pose(ee_pose_new)
-        if np.linalg.norm(ee_pos_new - pose[:3]) > 0.001 or np.linalg.norm(ee_ori_new - pose[3:]) > 0.001:
+        if np.linalg.norm(ee_pos_new - pose[:3]) > 0.005 or np.linalg.norm((ee_ori_new - pose[3:] + np.pi)%(np.pi*2) - np.pi) > 0.001:
             print("Failed to reach target.")
             return False
         return True
