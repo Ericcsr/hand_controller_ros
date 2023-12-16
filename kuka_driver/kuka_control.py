@@ -46,7 +46,7 @@ if __name__ == '__main__':
             iiwa.close()
             rospy.signal_shutdown("Close command received.")
 
-    ee_base = get_ee_base_pose([0.0,0.0,0.21], [0.0,0.0,0.0])
+    ee_base = get_ee_base_pose([-0.2,0.0,0.61], [0.0,0.0,0.0])
     iiwa.movePTPLineEEF(ee_base, [100])
 
 
