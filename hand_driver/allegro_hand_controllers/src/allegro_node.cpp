@@ -144,6 +144,7 @@ void AllegroNode::updateController() {
 
       // set & write torque to each joint:
       canDevice->setTorque(desired_torque);
+      // ROS_INFO("Ring finger torque: %f, %f, %f, %f", desired_torque[8], desired_torque[9], desired_torque[10], desired_torque[11]);
       lEmergencyStop = canDevice->writeJointTorque();
 
       // reset joint position update flag:

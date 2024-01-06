@@ -22,6 +22,7 @@
     <param name="base_frame" value="$(arg WRIST_FRAME)"/>
     <param name="world_frame" value="$(arg WORLD_FRAME)"/>
     <param name="hz" value="$(arg HZ)"/>
+    <param name="allegro_kdl/kdl_scaler" value="2.0"/>
 
   </node>
 

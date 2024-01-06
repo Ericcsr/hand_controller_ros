@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/ericcsr/hand_controller/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/ericcsr/hand_controller/src/hand_driver/allegro_hand_driver/include/**",
+        "/home/ericcsr/hand_controller/src/allegro_hand_kdl/include/**",
+        "/home/ericcsr/hand_controller/src/hand_driver/bhand/include/**",
+        "/home/ericcsr/hand_controller/src/kdl_control_tools/include/**",
+        "/home/ericcsr/hand_controller/src/ros_topic_connector/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

@@ -4,7 +4,7 @@
   <arg name="HAND" default="right"/>
 
   <!-- control frequency -->
-  <arg name="HZ" default="200"/>
+  <arg name="HZ" default="1000"/>
 
   <!-- whether continuously maintain the last pose -->
   <arg name="MAINTAIN" default="true" />
@@ -21,7 +21,7 @@
   <arg name="TORQUE_TOPIC" default="position_torque"/>
 
   <!-- joint velocity limit as radians -->
-  <arg name="VELOCITY_LIMIT" default="0.3"/>
+  <arg name="VELOCITY_LIMIT" default="0.5"/>
 
   <!-- reload gains -->
   <rosparam file="$(find allegro_hand_kdl)/config/gains.yaml" command="load"

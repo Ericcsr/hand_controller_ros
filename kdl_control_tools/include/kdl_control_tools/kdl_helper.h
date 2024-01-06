@@ -6,7 +6,7 @@
 
 #include <kdl/jntarray.hpp>
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 
 using namespace std;
 using namespace KDL;

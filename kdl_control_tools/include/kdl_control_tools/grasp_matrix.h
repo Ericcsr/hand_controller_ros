@@ -6,7 +6,7 @@
 #ifndef GRASP_MATRIX_H
 #define GRASP_MATRIX_H
 
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 #include <eigen_conversions/eigen_kdl.h>
 #include <eigen_conversions/eigen_msg.h>

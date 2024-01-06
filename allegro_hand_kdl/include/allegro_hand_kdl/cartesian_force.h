@@ -27,7 +27,7 @@
 #include <kdl/chain.hpp>
 #include <kdl/chainjnttojacsolver.hpp>
 
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 #include <allegro_hand_kdl/allegro_kdl_config.h>
 #include <kdl_control_tools/kdl_helper.h>

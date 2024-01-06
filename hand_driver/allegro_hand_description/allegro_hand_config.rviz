@@ -215,43 +215,46 @@ Visualization Manager:
           Value: true
         palm_link:
           Value: true
+        hand_root:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: false
       Show Axes: false
       Show Names: false
       Tree:
-        palm_link:
-          link_0.0:
-            link_1.0:
-              link_2.0:
-                link_3.0:
-                  link_3.0_tip:
-                    {}
-          link_12.0:
-            link_13.0:
-              link_14.0:
-                link_15.0:
-                  link_15.0_tip:
-                    {}
-          link_4.0:
-            link_5.0:
-              link_6.0:
-                link_7.0:
-                  link_7.0_tip:
-                    {}
-          link_8.0:
-            link_9.0:
-              link_10.0:
-                link_11.0:
-                  link_11.0_tip:
-                    {}
+        hand_root:
+          palm_link:
+            link_0.0:
+              link_1.0:
+                link_2.0:
+                  link_3.0:
+                    link_3.0_tip:
+                      {}
+            link_12.0:
+              link_13.0:
+                link_14.0:
+                  link_15.0:
+                    link_15.0_tip:
+                      {}
+            link_4.0:
+              link_5.0:
+                link_6.0:
+                  link_7.0:
+                    link_7.0_tip:
+                      {}
+            link_8.0:
+              link_9.0:
+                link_10.0:
+                  link_11.0:
+                    link_11.0_tip:
+                      {}
       Update Interval: 0
       Value: true
   Enabled: true
   Global Options:
     Background Color: 200; 200; 200
-    Fixed Frame: palm_link
+    Fixed Frame: hand_root
     Frame Rate: 30
   Name: root
   Tools:

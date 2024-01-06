@@ -36,7 +36,7 @@
 #include <kdl/chainiksolverpos_lma.hpp>
 #include <kdl/chainfksolverpos_recursive.hpp>
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 
 #include <allegro_hand_kdl/allegro_kdl_config.h>
 

@@ -4,5 +4,13 @@
         "vector": "cpp",
         "deque": "cpp",
         "string": "cpp"
-    }
+    },
+    "python.autoComplete.extraPaths": [
+        "/home/ericcsr/hand_controller/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/ericcsr/hand_controller/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ]
 }

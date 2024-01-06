@@ -10,6 +10,7 @@ Modified on 3rd-Jan-2021
 
 """
 import math
+import numpy as np
 import time
 from datetime import datetime
 
@@ -35,37 +36,31 @@ iiwa.setBlueOff()
 try:
 
     # Move to an initial position    
-    initPos = [0, 0, 0, -math.pi / 2, 0, math.pi / 2, 0];
+    initPos = [-np.pi/6, np.pi/6, 0.0, -np.pi/2,0,np.pi/3,np.pi/2-np.pi/6-np.pi];
     initVel = [0.1]
     iiwa.movePTPJointSpace(initPos, initVel)
 
+    ref_traj = np.load("traj2.npy")
+
     counter = 0
     index = 0
-    w = 0.6
-    theta = 0
-    interval = 2 * 3.14
-    a = 3.14 / 6
 
     jpos = iiwa.getJointsPos()
     jpos0_6 = jpos[index]
-    iiwa.realTime_startDirectServoJoints()
+    #iiwa.realTime_startDirectServoJoints()
 
     t0 = getSecs()
     t_0 = getSecs()
-    while theta < interval:
-        theta = w * (getSecs() - t0)
-        jpos[index] = jpos0_6 - a * (1 - math.cos(theta))
-
-        if (getSecs() - t_0) > 0.002:
-            iiwa.sendJointsPositions(jpos)
-            t_0 = getSecs()
-            counter = counter + 1
+    while counter < len(ref_traj):
+        iiwa.movePTPJointSpace(ref_traj[counter].tolist(), [0.2])
+        counter = counter + 1
+        print("Here")
 
     deltat = getSecs() - t0;
-    iiwa.realTime_stopDirectServoJoints()
+    #iiwa.realTime_stopDirectServoJoints()
 
     # Move to an initial position    
-    jPos = [math.pi / 3, 0, 0, -math.pi / 2, 0, math.pi / 2, 0];
+    jPos = [-np.pi/6, np.pi/6, 0.0, -np.pi/2,0,np.pi/3,np.pi/2-np.pi/6-np.pi];
     vRel = [0.1]
     iiwa.movePTPJointSpace(jPos, vRel)
     # Print some statistics

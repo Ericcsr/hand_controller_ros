@@ -28,7 +28,7 @@
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl/chaindynparam.hpp>
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 
 #include <allegro_hand_kdl/allegro_kdl_config.h>
 

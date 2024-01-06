@@ -6,19 +6,24 @@ from allegro_hand_kdl.srv import PoseGoalRequest, PoseGoal
 from std_msgs.msg import String
 import tf
 from iiwaPy3 import iiwaPy3
+from scipy.spatial.transform import Rotation
 # import pybullet as pb
 
 R = np.array([[0.7071,-0.7071,0.0],
               [0.7071,0.7071,0.0],
               [0.0,0.0,1.0]]) # +45 degree
-t = np.array([624.1869927062419, -84.9738197397598, 180]) * 0.001 # tune by hand.
-euler_offset = np.array([-1.65164718e+00, -2.70486858e-05, -np.pi])
+t = np.array([5.39358750e+02, -1.69763481e+02, 180]) * 0.001 # tune by hand, where the table world frame is w.r.t. the robot.
+euler_offset = np.array([0.0, 0.0, 0.0]) # [yaw, pitch, roll ] euler angle w.r.t.the base frame
 
 def get_ee_world_pose(pos):
-    return R.T@(pos[:3] * 0.001 - t), pos[3:] - euler_offset
+    pos_R = Rotation.from_euler('zyx', pos[3:]+np.array([0.0,0.0,-np.pi]))
+    euler_ee = Rotation.from_matrix(R.T@pos_R.as_matrix()).as_euler('xyz')
+    return R.T@(pos[:3] * 0.001 - t), euler_ee - euler_offset
 
 def get_ee_base_pose(pos,ori):
-    return ((R@pos[:3] + t) * 1000).tolist() + (ori + euler_offset).tolist()
+    euler = Rotation.from_matrix(Rotation.from_euler("xyz",ori+euler_offset).as_matrix()@R).as_euler("zyx") + np.array([0.0,0.0,np.pi])
+    euler
+    return ((R@pos[:3] + t) * 1000).tolist() + euler.tolist()
 
 
 if __name__ == '__main__':
@@ -35,9 +40,20 @@ if __name__ == '__main__':
         print(ee_base, iiwa.getEEFPos())
         iiwa.movePTPLineEEF(ee_base, [100])
         ee_pose_new = np.array(iiwa.getEEFPos())
+        print("New base pose:", ee_pose_new)
         ee_pos_new, ee_ori_new = get_ee_world_pose(ee_pose_new)
         if np.linalg.norm(ee_pos_new - pose[:3]) > 0.005 or np.linalg.norm((ee_ori_new - pose[3:] + np.pi)%(np.pi*2) - np.pi) > 0.001:
-            print("Failed to reach target.")
+            print("Failed to reach target:", ee_base)
+            return False
+        return True
+    
+    def new_joint_handler(joint_msg):
+        print("New message received.")
+        joint = np.array(joint_msg.pose)
+        iiwa.movePTPJointSpace(joint, [0.15])
+        joint_new = np.array(iiwa.getJointsPos())
+        if np.linalg.norm(joint_new - joint) > 0.005:
+            print("Failed to reach target:", joint)
             return False
         return True
 
@@ -46,13 +62,17 @@ if __name__ == '__main__':
             iiwa.close()
             rospy.signal_shutdown("Close command received.")
 
-    ee_base = get_ee_base_pose([-0.2,0.0,0.61], [0.0,0.0,0.0])
-    iiwa.movePTPLineEEF(ee_base, [100])
+    # ee_base = get_ee_base_pose([0.0,0.0,0.3], [0.0,0.0,np.pi])
+    # print("Initial base pose:", ee_base)
+    iiwa.movePTPJointSpace([-0.7153848657390822, 0.23627692865494376, -0.06146527133579401, -1.2628601611175012, 0.01487889923612773, 1.6417360407890011, -2.344269879142319], [0.3])
+    ee_pose_new = np.array(iiwa.getEEFPos())
+    print("New base pose:", ee_pose_new)
 
 
     
     rospy.Subscriber("/kuka_cmd", String, cmd_handler)
     rospy.Service("kuka_pose_service", PoseGoal, new_pose_handler)
+    rospy.Service("kuka_joint_service", PoseGoal, new_joint_handler)
     rospy.spin()
 
     # try:

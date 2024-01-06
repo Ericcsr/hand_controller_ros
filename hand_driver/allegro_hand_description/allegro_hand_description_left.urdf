@@ -13,15 +13,19 @@
   <!-- ========================= LIMITS ========================= -->
   <!-- ============================================================================= -->
   <!-- PALM -->
-  <link name="world">
-  </link>
+  <!-- <link name="world">
+  </link> -->
   <link name="hand_root">
   </link>
-  <joint name="world_joint" type="fixed">
-    <origin rpy="0 1.5708 0" xyz="0 0 0"/>
-    <!-- <origin rpy="0 0 0" xyz="0 0 0"/> -->
+  <!-- <joint name="root_joint" type="fixed">
+    <origin rpy="0 1.5707963259 0" xyz="0 0 0"/>
     <parent link="world"/>
     <child link="hand_root"/>
+  </joint> -->
+  <joint name="root" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="hand_root"/>
+    <child link="palm_link"/>
   </joint>
   <link name="palm_link">
     <visual>
@@ -45,11 +49,7 @@
       <inertia ixx="1e-4" ixy="0.0" ixz="0.0" iyy="1e-4" iyz="0.0" izz="1e-4"/>
     </inertial>
   </link>
-  <joint name="root" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <parent link="hand_root"/>
-    <child link="palm_link"/>
-  </joint>
+
   <!-- ============================================================================= -->
   <!-- FINGERS -->
   <!-- RIGHT HAND due to which finger is number 0 -->

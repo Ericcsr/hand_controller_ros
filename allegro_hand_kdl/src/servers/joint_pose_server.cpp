@@ -30,7 +30,7 @@
 #include <signal.h>
 
 #include <allegro_hand_kdl/joint_position_control.h>
-#include <allegro_hand_kdl/PoseRequest.h>
+#include <allegro_hand_kdl/PoseGoal.h>
 #include <allegro_hand_kdl/GainParam.h>
 
 #include <kdl_control_tools/progress_logger.h>
@@ -53,7 +53,7 @@ double v_lim_ = 0.3;
 
 // params
 double update_freq_ = 200;
-double safety_torque_ = 1.0;
+double safety_torque_ = 3.0;
 bool maintain_ = true;
 double stop_torque_ = 0.05;
 double time_limit_ = 3.0;
@@ -73,7 +73,7 @@ bool finished_ = true;
 void sigintCallback(int sig);
 void jointStateCallback(const sensor_msgs::JointState::ConstPtr &msg);
 void timerCallback(const ros::TimerEvent&);
-bool processPoseRequest(allegro_hand_kdl::PoseRequest::Request& req, allegro_hand_kdl::PoseRequest::Response& res);
+bool processPoseRequest(allegro_hand_kdl::PoseGoal::Request& req, allegro_hand_kdl::PoseGoal::Response& res);
 vector<double> getDefinedPose(string desired_name);
 bool getControlGains(ros::NodeHandle& nh, vector<double>& k_pos_vec, vector<double>& k_vel_vec, vector<double>& k_int_vec);
 bool getParams();
@@ -429,14 +429,15 @@ void timerCallback(const ros::TimerEvent&)
 }
 
 bool processPoseRequest(
-      allegro_hand_kdl::PoseRequest::Request& req,
-      allegro_hand_kdl::PoseRequest::Response& res)
+      allegro_hand_kdl::PoseGoal::Request& req,
+      allegro_hand_kdl::PoseGoal::Response& res)
   {
   // read the pose, if exists
-  if (req.pose.size() > 0)
+  if (req.pose.size() == 16)
   {
-    vector<double> pose = getDefinedPose(req.pose);
-    if (pose.size() < FINGER_COUNT*FINGER_LENGTH) return false;
+    vector<double> pose;
+    for (int i=0; i < 16; i++)
+      pose.push_back(req.pose[i]);
     // update the desired joint states
     q_des_ = pose;
   }
@@ -444,15 +445,9 @@ bool processPoseRequest(
   {
     // otherwise maintain current pose
     q_des_.clear();
+    res.success = false;
+    return false;
   }
-
-  // maintaining behaviour (optional)
-  if (req.behaviour.size() > 0)
-    maintain_ = (req.behaviour == "maintain");
-  // finger activation update (optional)
-  if (req.active_fingers.size() == FINGER_COUNT)
-    joint_control_->setActiveFingers(req.active_fingers);
-
   // activate controller again
   finished_ = false;
 

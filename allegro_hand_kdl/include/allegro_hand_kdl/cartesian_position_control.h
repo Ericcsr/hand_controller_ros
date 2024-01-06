@@ -24,7 +24,7 @@
 
 #include <ros/ros.h>
 
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 #include <allegro_hand_kdl/cartesian_force.h>
 #include <allegro_hand_kdl/kinematics.h>
